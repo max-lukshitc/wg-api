@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "module": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -10,6 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify-static": "^2.5.0"
+    "chalk": "^4.1.2",
+    "esm": "^3.2.25",
+    "fastify": "^4.5.3",
+    "fastify-static": "^2.7.0",
+    "ini": "^3.0.1"
   }
 }
