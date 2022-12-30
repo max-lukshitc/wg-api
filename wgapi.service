@@ -1,0 +1,11 @@
+[Unit]
+Description=WG API
+
+[Service]
+ExecStart=/usr/bin/node /app/wg-api/server.js
+Restart=always
+User=root
+WorkingDirectory=/app/wg-api
+
+[Install]
+WantedBy=multi-user.target
