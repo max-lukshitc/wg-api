@@ -65,7 +65,7 @@ if [ ! -f "$WG_CONFIG" ]; then
         echo "   1) Cloudflare"
         echo "   2) Google"
         echo "   3) OpenDNS"
-        read -p "DNS [1-3]: " -e -i 1 DNS_CHOICE
+        read -p "DNS [1-3]: " -e -i 2 DNS_CHOICE
 
         case $DNS_CHOICE in
             1)
