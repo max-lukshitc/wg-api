@@ -99,8 +99,9 @@ del_user() {
     local userdir="../../profiles/$user"
     local ip key
     local interface=${_INTERFACE}
+    local key=$( cat "$userdir/publickey" )
 
-    read ip key <<<"$(awk "/^$user /{print \$2, \$3}" ${SAVED_FILE})"
+    read ip keyt <<<"$(awk "/^$user /{print \$2, \$3}" ${SAVED_FILE})"
     if [[ -n "$key" ]]; then
         wg set $interface peer $key remove
         if [[ $? -ne 0 ]]; then
