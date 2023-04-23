@@ -136,6 +136,8 @@ qrencode -t ansiutf8 -l L < $HOME/$CLIENT_NAME-wg0.conf
     echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
     echo "net.ipv4.conf.all.forwarding=1" >> /etc/sysctl.conf
     echo "net.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf
+    # TODO some websites found that VPN by ping
+    echo "net.ipv4.icmp_echo_ignore_all=1" >> /etc/sysctl.conf
     sysctl -p
 
     if [ "$DISTRO" == "CentOS" ]; then
