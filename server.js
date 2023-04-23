@@ -114,6 +114,25 @@ fastify.get('/peer/create/:username', function(request, reply) {
     }
 })
 
+fastify.get('/peer/restore/:username', function(request, reply) {
+    cliMsg(`${request.ip} requested restore peer named ${request.params.username}`)
+    if (!authAction(request)) return
+    exec('bash ./scripts/bash/wg.sh -r ' + request.params.username, (err, stdout, stderr) => {
+        var profile = ini.parse(fs.readFileSync('./profiles/' + request.params.username + '/wg0.conf', 'utf-8'))
+        profile.qr = "/peer/qr/" + request.params.username
+        reply.send(JSON.stringify({ code: 200, profile }, null, 2))
+    })
+})
+
+
+fastify.get('/client/stop/:username', function(request, reply) {
+    cliMsg(`${request.ip} requested stop of peer ${request.params.username}`)
+    if (!authAction(request)) return
+    exec(`bash ./scripts/bash/wg.sh -s ${request.params.username}`, (err, stdout, stderr) => {
+        reply.send(JSON.stringify({ code: 200, profile: "Stopped" }, null, 2))
+    });
+})
+
 fastify.get('/client/remove/:username', function(request, reply) {
     cliMsg(`${request.ip} requested removal of peer ${request.params.username}`)
     if (!authAction(request)) return

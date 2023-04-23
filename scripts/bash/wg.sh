@@ -94,6 +94,46 @@ add_user() {
     echo -e "\e[44m[wg-api cli]\e[0m Created $user"
 }
 
+restore_user() {
+    local user=$1
+    local template_file=${CLIENT_TPL_FILE}
+    local interface=${_INTERFACE}
+    local userdir="../../profiles/$user"
+
+    # client config file
+    _PRIVATE_KEY=`cat $userdir/privatekey`
+
+    # change wg config
+    local ip
+    read ip <<<"$(awk  -F" = " "/AllowedIPs/ {print \$2}" ${userdir}/wg0.conf)"
+    ip=${ip// /}
+    local public_key=`cat $userdir/publickey`
+    wg set $interface peer $public_key allowed-ips $ip
+    if [[ $? -ne 0 ]]; then
+        echo "wg set failed"
+        rm -rf $user
+        exit 1
+    fi
+
+    echo -e "\e[44m[wg-api cli]\e[0m Restored $user"
+}
+
+stop_user() {
+    local user=$1
+    local userdir="../../profiles/$user"
+    local interface=${_INTERFACE}
+    local key=$( cat "$userdir/publickey" )
+
+    if [[ -n "$key" ]]; then
+        wg set $interface peer $key remove
+        if [[ $? -ne 0 ]]; then
+            echo "wg set failed"
+            exit 1
+        fi
+    fi
+    echo -e "\e[44m[wg-api cli]\e[0m Stopped $user"
+}
+
 del_user() {
     local user=$1
     local userdir="../../profiles/$user"
@@ -154,6 +194,10 @@ do_user() {
         add_user $user
     elif [[ $action == "-d" ]]; then
         del_user $user
+    elif [[ $action == "-r" ]]; then
+        restore_user $user
+    elif [[ $action == "-s" ]]; then
+        stop_user $user
     fi
 
     generate_and_install_server_config_file
@@ -208,7 +252,7 @@ elif [[ $action == "-l" ]]; then
     list_user
 elif [[ $action == "-g" ]]; then
     generate_cidr_ip_file_if
-elif [[ ! -z "$user" && ( $action == "-a" || $action == "-d" ) ]]; then
+elif [[ ! -z "$user" && ( $action == "-a" || $action == "-d" || $action == "-s"|| $action == "-r") ]]; then
     do_user
 else
     usage
