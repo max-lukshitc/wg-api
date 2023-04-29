@@ -105,8 +105,8 @@ restore_user() {
 
     # change wg config
     local ip
-    read ip <<<"$(awk  -F" = " "/AllowedIPs/ {print \$2}" ${userdir}/wg0.conf)"
-    ip=${ip// /}
+    read -r ip <<<"$(awk  -F" = " "/Address/ {print \$2}" ${userdir}/wg0.conf)"
+    ip=${ip%/*}/32
     local public_key=`cat $userdir/publickey`
     wg set $interface peer $public_key allowed-ips $ip
     if [[ $? -ne 0 ]]; then
