@@ -1,0 +1,11 @@
+[Unit]
+Description=Run check_wgapi.sh script
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/app/wg-api/scripts/bash/sim_check_wgapi.sh
+
+[Install]
+WantedBy=multi-user.target
+
